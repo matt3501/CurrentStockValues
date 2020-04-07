@@ -1,0 +1,9 @@
+{
+  "devDependencies": {
+    "jest": "^25.2.7"
+  },
+  "scripts": {
+    "test": "jest"
+  },
+  "license": "Apache-2.0"
+}
