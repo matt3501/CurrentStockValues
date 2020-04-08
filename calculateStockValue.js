@@ -137,18 +137,13 @@ class StockController {
     }
     async initializeStockProperties(stock, self) {
         let currentPrice = await StockApiConsumer.requestCurrentPriceForTicker(stock.ticker);
-
-        stock.currentPrice = currentPrice.price;
-
-        stock.currentValue = stock.currentPrice * stock.quantity;
-
         let historicalResult = await StockApiConsumer.requestHistoricalDailyPriceForTicker(stock.ticker);
 
+        stock.currentPrice = currentPrice.price;
+        stock.currentValue = stock.currentPrice * stock.quantity;
         stock.historicalData = historicalResult;
 
         self.findMinAndMaxFromHistoricalData(stock);
-
-        stock.sayHello();
     }
     findMinAndMaxFromHistoricalData(stock) {
         var lowest = Number.POSITIVE_INFINITY;
@@ -166,13 +161,6 @@ class StockController {
     outputDataToCSV(self) {
         var portfolio = new Portfolio(self.stocksToRetrieve);
 
-        //function* values(obj) {
-        //    for (let prop of Object.keys(obj)) // own properties, you might use
-        //    // for (let prop in obj)
-        //        yield obj[prop];
-        //}
-        //let arr = Array.from(values(portfolio.displayItems));
-
         var displayArray = [];
 
         portfolio.displayItems.forEach((item) => {
@@ -187,8 +175,6 @@ class StockController {
 
 class CsvUtils {
     static jsonArrayToCsv(jsonObjects, fileName) {
-        const stringToReplaceComas = "!!!!";
-
         var csvRows = [];
 
         var tokenHeaders = Object.keys(jsonObjects[0]).join(",");
