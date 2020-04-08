@@ -16,116 +16,234 @@ limitations under the License.
 
 */
 
-// Public
-module.exports = calculateStockValue;
 
 const https = require("https");
+const fs = require("fs");
 
-class Stock {
-	constructor(ticker, quantity) {
+
+/*
+ * Helper extension methods
+ */
+Array.prototype.sum = function (prop) {
+    var total = 0;
+    for (var i = 0, _len = this.length; i < _len; i++) {
+        total += this[i][prop];
+    }
+    return total;
+}
+
+class PortfolioDisplayItem {
+	constructor(ticker, quantity, currentValue) {
 		this.ticker = ticker;
-		this.quantity = quantity;
-	}
-	sayHello() {
-		console.log("Hello, my name is " + this.ticker + ", I have quantity: " + this.quantity
-			+ " and current price: " + this.currentPrice
-			+ " and high: " + this.high
-			+ " and low: " + this.low
-			+ " and current Value: " + this.currentValue);
-	}
-	async initializeStockProperties() {
-		this.currentPrice = 0.0;
-		this.high = 0.0;
-		this.low = 0.0;
-		this.currentValue = 0.0;
+        this.quantity = quantity;
+        this.currentPrice = null;
+        this.high = null;
+        this.low = null;
+        this.currentValue = currentValue;
+    }
+    sayHello() {
+        console.log("Hello, my name is " + this.ticker + ", I have quantity: " + this.quantity
+            + " and current price: " + this.currentPrice
+            + " and high: " + this.high
+            + " and low: " + this.low
+            + " and current Value: " + this.currentValue);
+    }
+    displayObjects() {
+        return {
+            "Ticker" : this.ticker,
+            "Quantity" : this.quantity,
+            "Current Price" : PortfolioDisplayItem.toPrettyMoney(this.currentPrice),
+            "High" : PortfolioDisplayItem.toPrettyMoney(this.high),
+            "Low": PortfolioDisplayItem.toPrettyMoney(this.low),
+            "Current Value" : PortfolioDisplayItem.toPrettyMoney(this.currentValue)
+        };
+    }
+    static toPrettyMoney(value) {
+        if (!value)
+            return value;
+        else
+            return new Intl.NumberFormat("en-US",
+                { style: "currency", currency: "USD" }
+            ).format(value);
+    }
+}
 
-		var api = new StockApiConsumer();
+class Portfolio {
+    constructor(stocks) {
+        this.stocks = stocks;
 
-		const result = await api.requestCurrentPriceForTicker(this.ticker);
+        var currentTotal = stocks.sum("currentValue");
 
-        this.currentPrice = result;
-
+        stocks.push(new PortfolioDisplayItem("Total", null, currentTotal));
+    }
+    get displayItems() {
+        return this.stocks;
     }
 }
 
 const url = "financialmodelingprep.com";
+const startDate = "2019-01-01";
+const today = new Date().toISOString().slice(0, 10);
 
 class StockApiConsumer {
-	requestCurrentPriceForTicker(ticker) {
+    static requestCurrentPriceForTicker(ticker) {
         return new Promise(resolve => {
-
-		    ////historical funness
-		    // var options = {
-		    // host: url,
-		    // port: 443,
-		    // path: '/api/v3/historical-price-full/index/' + this.ticker,
-		    // method: 'GET'
-		    // };
-
-		    // https.request(options, function(res) {
-		    // console.log('STATUS: ' + res.statusCode);
-		    // console.log('HEADERS: ' + JSON.stringify(res.headers));
-		    // res.setEncoding('utf8');
-		    // res.on('data', function (chunk) {
-		    // var result = JSON.parse(chunk);
-		    // });
-		    // }).end();
-
-		    var options = {
-			    host: url,
-			    port: 443,
-			    path: "/api/v3/stock/real-time-price/" + ticker,
-			    method: "GET"
-		    };
-
-		    // console.log(options.host + options.path);
-		    var self = this;
-		    https.request(options, function (res) {
-			    // console.log('STATUS: ' + res.statusCode);
-			    // console.log('HEADERS: ' + JSON.stringify(res.headers));
-			    res.setEncoding("utf8");
-			    res.on("data", function (chunk) {
-				    var result = JSON.parse(chunk);
-				    resolve(result.price);
-				    //self.currentPrice = result.price;
-
-				    //self.currentValue = result.price * self.quantity;
-
-				    //self.sayHello();
-			    });
-		    }).end();
+            resolve(this.placeApiRequest("/api/v3/stock/real-time-price/" + ticker));
         });
-	}
+    }
+    static requestHistoricalDailyPriceForTicker(ticker) {
+        return new Promise(resolve => {
+            resolve(this.placeApiRequest("/api/v3/historical-price-full/" + ticker + "?from=" + startDate + "&to=" + today ));
+        });
+    }
+    static placeApiRequest(path) {
+        return new Promise(resolve => {
+            var options = {
+                host: url,
+                port: 443,
+                path: path,
+                method: "GET"
+            };
+
+            var chunks = "";
+
+            https.request(options, function (res) {
+                res.setEncoding("utf8");
+                res.on("data", function (chunk) {
+                    chunks += chunk;
+                });
+                res.on("end",
+                    function() {
+                        const result = JSON.parse(chunks);
+                        resolve(result);
+                    });
+            }).end();
+        });
+    }
 }
 
-function calculateStockValue(stocksToRetrieve) {
-	stocksToRetrieve.forEach(function (stock) {
-		stock.initializeStockProperties();
+class StockController {
+    constructor(stocksToRetrieve) {
+        this.stocksToRetrieve = stocksToRetrieve;
+    }
+    calculateStockValue(callback) {
+        var self = this;
+        
+        const promises = self.stocksToRetrieve.map((stock) => {
+            return self.initializeStockProperties(stock, self);
+        });
+
+        Promise.all(promises).then(function() { callback(self); });
+    }
+    async initializeStockProperties(stock, self) {
+        let currentPrice = await StockApiConsumer.requestCurrentPriceForTicker(stock.ticker);
+
+        stock.currentPrice = currentPrice.price;
+
+        stock.currentValue = stock.currentPrice * stock.quantity;
+
+        let historicalResult = await StockApiConsumer.requestHistoricalDailyPriceForTicker(stock.ticker);
+
+        stock.historicalData = historicalResult;
+
+        self.findMinAndMaxFromHistoricalData(stock);
+
         stock.sayHello();
-    });
+    }
+    findMinAndMaxFromHistoricalData(stock) {
+        var lowest = Number.POSITIVE_INFINITY;
+        var highest = Number.NEGATIVE_INFINITY;
+        var tmp;
+        var historicalData = stock.historicalData.historical;
+        for (var i = historicalData.length - 1; i >= 0; i--) {
+            tmp = historicalData[i];
+            if (tmp.low < lowest) lowest = tmp.low;
+            if (tmp.high > highest) highest = tmp.high;
+        }
+        stock.high = highest;
+        stock.low = lowest;
+    }
+    outputDataToCSV(self) {
+        var portfolio = new Portfolio(self.stocksToRetrieve);
+
+        //function* values(obj) {
+        //    for (let prop of Object.keys(obj)) // own properties, you might use
+        //    // for (let prop in obj)
+        //        yield obj[prop];
+        //}
+        //let arr = Array.from(values(portfolio.displayItems));
+
+        var displayArray = [];
+
+        portfolio.displayItems.forEach((item) => {
+            displayArray.push(item.displayObjects());
+        });
+
+        CsvUtils.jsonArrayToCsv(displayArray, "testStockOutput.csv");
+    }
 }
 
-// init
+
+
+class CsvUtils {
+    static jsonArrayToCsv(jsonObjects, fileName) {
+        const stringToReplaceComas = "!!!!";
+
+        var csvRows = [];
+
+        var tokenHeaders = Object.keys(jsonObjects[0]).join(",");
+
+        csvRows.push(tokenHeaders);
+
+        jsonObjects.forEach(function (singleRow) {
+            for (let [key, value] of Object.entries(singleRow)) {
+                if (value !== null && value) {
+                    if ((value + "").indexOf(",") > -1)
+                        singleRow[key] = "\"" + value + "\"";
+                }
+            }
+
+            csvRows.push(Object.values(singleRow).join(","));
+        });
+
+        let csv = `${csvRows.join('\n').replace(/,/g, ',')}`;
+
+        fs.writeFile(fileName, csv, "utf8", function (err) {
+            if (err) {
+                 console.log("Some error occured - file either not saved or corrupted file saved.");
+            } else {
+                console.log("It's saved!");
+            }
+        });
+    }
+}
+
+/*
+ * Entry point, arguments processed here or defaults are used
+ */
 (function () {
 	var myArgs = process.argv.slice(2);
 
-	var stocksToRetrieve;
+    var stocksToRetrieve = [];
 
     if (myArgs === undefined || myArgs.length === 0) {
         stocksToRetrieve = [
-            new Stock("AMZN", 42),
-            new Stock("MSFT", 1337),
-            new Stock("TWTR", 69105)
+            new PortfolioDisplayItem("AMZN", 42),
+            new PortfolioDisplayItem("MSFT", 1337),
+            new PortfolioDisplayItem("TWTR", 69105)
         ];
 	} else if (myArgs.length % 2 === 0) {
-        stocksToRetrieve = [];
         for (var i = 0; i < myArgs.length; i += 2) {
-			stocksToRetrieve.push(new Stock(myArgs[i], myArgs[i + 1]));
+			stocksToRetrieve.push(new PortfolioDisplayItem(myArgs[i], myArgs[i + 1]));
 		}
 	}
 
-	if (stocksToRetrieve.length > 0) {
-        calculateStockValue(stocksToRetrieve);
+    if (stocksToRetrieve.length > 0) {
+        var controller = new StockController(stocksToRetrieve);
+        controller.calculateStockValue(controller.outputDataToCSV);
     }
 })();
 
+
+// Public
+module.exports = StockController;
