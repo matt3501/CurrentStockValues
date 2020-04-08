@@ -14,8 +14,17 @@ limitations under the License.
 
 */
 
-const sum = require('./sum');
+const calculateStockValue = require('./calculateStockValue');
+
+var fs = require('fs');
+
+try {
+    var data = fs.readFileSync('ExampleOutput.csv', 'utf8');
+    console.log(data);    
+} catch(e) {
+    console.log('Error:', e.stack);
+}
 
 test('adds 1 + 2 to equal 3', () => {
-  expect(sum(1, 2)).toBe(3);
+  expect(calculateStockValue()).toBe(data);
 });

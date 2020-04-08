@@ -1,3 +1,5 @@
+"use strict";
+
 /*
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,8 +16,23 @@ limitations under the License.
 
 */
 
-const sum = require('./sum');
 
-test('adds 1 + 2 to equal 3', () => {
-  expect(sum(1, 2)).toBe(3);
-});
+
+
+class Stock {
+  constructor(ticker, quantity) {
+    this.ticker = ticker;
+    this.quantity = quantity;
+  }
+  sayHello() {
+    console.log('Hello, my name is ' + this.ticker + ', I have ID: ' + this.quantity);
+  }
+  initializeStockProperties() {
+    this.currentPrice = 0.0;
+    this.high = 0.0;
+    this.low = 0.0;
+    this.currentValue = 0.0;
+  }
+}
+
+module.exports = Stock;
