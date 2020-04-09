@@ -1,30 +1,25 @@
 "use strict";
 
-/*
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-
-*/
-
+//     calculateStockValue.js 1.0.0
+//     https://github.com/matt3501/CurrentStockValues
+//     
+//     Licensed under the Apache License, Version 2.0 (the "License");
+//     you may not use this file except in compliance with the License.
+//     You may obtain a copy of the License at
+//     http://www.apache.org/licenses/LICENSE-2.0
+//     
+//     Unless required by applicable law or agreed to in writing, software
+//     distributed under the License is distributed on an "AS IS" BASIS,
+//     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//     See the License for the specific language governing permissions and
+//     limitations under the License.
 
 const https = require("https");
 const fs = require("fs");
 const Language = require("./language.en.resources");
 
-
-/*
- * Helper extension method
- */
+// Helper extension methods
+// --------------
 Array.prototype.sum = function (prop) {
     let total = 0;
     for (let i = 0, _len = this.length; i < _len; i++) {
@@ -33,22 +28,22 @@ Array.prototype.sum = function (prop) {
     return total;
 }
 
-/**
- * Holds values associated to one entry in a portfolio.
- * Can be used either to hold stock information or as a total.
- *
- * Stock usage declaration:
- * new PortfolioDisplayItem("STOK", 77);
- * Total usage declaration:
- * new PortfolioDisplayItem("Total", null, "$10,000");
- */
+
+// Support Classes
+// --------------
+
+// Holds values associated to one entry in a portfolio.
+// Can be used either to hold stock information or as a total.
+// 
+// Stock usage declaration:
+// `new PortfolioDisplayItem("STOK", 77);`
+// Total usage declaration:
+// `new PortfolioDisplayItem("Total", null, "$10,000");`
 class PortfolioDisplayItem {
-    /**
-     * Create an item to be displayed in a portfolio.
-     * @param {ticker} ticker - The ticker value.
-     * @param {quantity} quantity - The quantity value, null if total
-     * @param {currentValue} currentValue - The currentValue value, sum if a total
-     */
+    // Create an item to be displayed in a portfolio.
+    // @param {ticker} ticker - The ticker value.
+    // @param {quantity} quantity - The quantity value, null if total
+    // @param {currentValue} currentValue - The currentValue value, sum if a total
     constructor(ticker, quantity, currentValue) {
         this.ticker = ticker;
         this.quantity = quantity;
@@ -58,10 +53,8 @@ class PortfolioDisplayItem {
         this.currentValue = currentValue;
     }
 
-    /**
-     * Get the objects needed for display returned.
-     * @return {number} The x value.
-     */
+    // Get the objects needed for display returned.
+    // @return {number} The x value.
     displayObjects() {
         let obj = {};
         obj[Language.ticker] = this.ticker;
@@ -74,11 +67,9 @@ class PortfolioDisplayItem {
         return obj;
     }
 
-    /**
-     * Convert a string containing two comma-separated numbers into a point.
-     * @param {string} str - The string containing two comma-separated numbers.
-     * @return {Point} A Point object.
-     */
+    // Convert a string containing two comma-separated numbers into a point.
+    // @param {string} value - The string containing two comma-separated numbers.
+    // @return {string} formatted string to USD
     static toPrettyMoney(value) {
         if (!value)
             return value;
@@ -89,6 +80,9 @@ class PortfolioDisplayItem {
     }
 }
 
+/**
+ * Class for holding a collection of stocks and/or totals of stocks
+ */
 class Portfolio {
     constructor(stocks) {
         this.stocks = stocks;
@@ -106,6 +100,11 @@ const API_URL = "financialmodelingprep.com";
 const STOCK_START_DATE = "2019-01-01";
 const TODAY = new Date().toISOString().slice(0, 10);
 
+/**
+ * Class for interfacing to a remote stock API hosted here:
+ *
+ * https://financialmodelingprep.com
+ */
 class StockApiConsumer {
     static requestCurrentPriceForTicker(ticker) {
         return new Promise(resolve => {
@@ -143,6 +142,9 @@ class StockApiConsumer {
     }
 }
 
+/**
+ * Class for performing business logic on retrieved stock information
+ */
 class StockController {
     constructor(stocksToRetrieve) {
         this.stocksToRetrieve = stocksToRetrieve;
@@ -193,6 +195,9 @@ class StockController {
     }
 }
 
+/**
+ * Utility class created to form and write CSV data
+ */
 class CsvUtils {
     static jsonArrayToCsv(jsonObjects) {
         let csvRows = [];
@@ -230,7 +235,7 @@ class CsvUtils {
     }
 }
 
-/*
+/**
  * Entry point, arguments processed here or defaults are used
  */
 (function () {
@@ -272,5 +277,3 @@ module.exports = {
     StockController: StockController,
     CsvUtils: CsvUtils
 } 
-
-//export { PortfolioDisplayItem, Portfolio, StockApiConsumer, StockController, CsvUtils };

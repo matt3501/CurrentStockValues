@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>calculateStockValues.js</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+      <ul id="jump_to">
+        <li>
+          <a class="large" href="javascript:void(0);">Jump To &hellip;</a>
+          <a class="small" href="javascript:void(0);">+</a>
+          <div id="jump_wrapper">
+          <div id="jump_page_wrapper">
+            <div id="jump_page">
+              
+                
+                <a class="source" href="calculateStockValues.html">
+                  calculateStockValues.js
+                </a>
+              
+                
+                <a class="source" href="calculateStockValues.test.html">
+                  calculateStockValues.test.js
+                </a>
+              
+                
+                <a class="source" href="language.en.resources.html">
+                  language.en.resources.js
+                </a>
+              
+            </div>
+          </div>
+        </li>
+      </ul>
+    
+    <ul class="sections">
+        
+          <li id="title">
+              <div class="annotation">
+                  <h1>calculateStockValues.js</h1>
+              </div>
+          </li>
+        
+        
+        
+        <li id="section-1">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-meta">"use strict"</span>;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-2">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-2">&#182;</a>
+              </div>
+              <pre><code>calculateStockValue.js <span class="hljs-number">1.0</span><span class="hljs-number">.0</span>
+<span class="hljs-attr">https</span>:<span class="hljs-comment">//github.com/matt3501/CurrentStockValues</span>
+
+Licensed under the Apache License, Version <span class="hljs-number">2.0</span> (the <span class="hljs-string">"License"</span>);
+you may not use <span class="hljs-keyword">this</span> file except <span class="hljs-keyword">in</span> compliance <span class="hljs-keyword">with</span> the License.
+You may obtain a copy <span class="hljs-keyword">of</span> the License at
+<span class="hljs-attr">http</span>:<span class="hljs-comment">//www.apache.org/licenses/LICENSE-2.0</span>
+
+Unless required by applicable law or agreed to <span class="hljs-keyword">in</span> writing, software
+distributed under the License is distributed on an <span class="hljs-string">"AS IS"</span> BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License <span class="hljs-keyword">for</span> the specific language governing permissions and
+limitations under the License.</code></pre>
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>
+<span class="hljs-keyword">const</span> https = <span class="hljs-built_in">require</span>(<span class="hljs-string">"https"</span>);
+<span class="hljs-keyword">const</span> fs = <span class="hljs-built_in">require</span>(<span class="hljs-string">"fs"</span>);
+<span class="hljs-keyword">const</span> Language = <span class="hljs-built_in">require</span>(<span class="hljs-string">"./language.en.resources"</span>);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-3">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-3">&#182;</a>
+              </div>
+              <h2 id="helper-extension-methods">Helper extension methods</h2>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-built_in">Array</span>.prototype.sum = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">prop</span>) </span>{
+    <span class="hljs-keyword">let</span> total = <span class="hljs-number">0</span>;
+    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> i = <span class="hljs-number">0</span>, _len = <span class="hljs-keyword">this</span>.length; i &lt; _len; i++) {
+        total += <span class="hljs-keyword">this</span>[i][prop];
+    }
+    <span class="hljs-keyword">return</span> total;
+}</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-4">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-4">&#182;</a>
+              </div>
+              <h2 id="support-classes">Support Classes</h2>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-5">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-5">&#182;</a>
+              </div>
+              <p>Holds values associated to one entry in a portfolio.
+Can be used either to hold stock information or as a total.</p>
+<p>Stock usage declaration:
+<code>new PortfolioDisplayItem(&quot;STOK&quot;, 77);</code>
+Total usage declaration:
+<code>new PortfolioDisplayItem(&quot;Total&quot;, null, &quot;$10,000&quot;);</code></p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">PortfolioDisplayItem</span> </span>{
+    <span class="hljs-comment">/**
+     * Create an item to be displayed in a portfolio.
+     * <span class="hljs-doctag">@param <span class="hljs-type">{ticker}</span> <span class="hljs-variable">ticker</span></span> - The ticker value.
+     * <span class="hljs-doctag">@param <span class="hljs-type">{quantity}</span> <span class="hljs-variable">quantity</span></span> - The quantity value, null if total
+     * <span class="hljs-doctag">@param <span class="hljs-type">{currentValue}</span> <span class="hljs-variable">currentValue</span></span> - The currentValue value, sum if a total
+     */</span>
+    <span class="hljs-keyword">constructor</span>(ticker, quantity, currentValue) {
+        <span class="hljs-keyword">this</span>.ticker = ticker;
+        <span class="hljs-keyword">this</span>.quantity = quantity;
+        <span class="hljs-keyword">this</span>.currentPrice = <span class="hljs-literal">null</span>;
+        <span class="hljs-keyword">this</span>.high = <span class="hljs-literal">null</span>;
+        <span class="hljs-keyword">this</span>.low = <span class="hljs-literal">null</span>;
+        <span class="hljs-keyword">this</span>.currentValue = currentValue;
+    }
+
+    <span class="hljs-comment">/**
+     * Get the objects needed for display returned.
+     * <span class="hljs-doctag">@return <span class="hljs-type">{number}</span> </span>The x value.
+     */</span>
+    displayObjects() {
+        <span class="hljs-keyword">let</span> obj = {};
+        obj[Language.ticker] = <span class="hljs-keyword">this</span>.ticker;
+        obj[Language.quantity] = <span class="hljs-keyword">this</span>.quantity;
+        obj[Language.currentPrice] = PortfolioDisplayItem.toPrettyMoney(<span class="hljs-keyword">this</span>.currentPrice);
+        obj[Language.high] = PortfolioDisplayItem.toPrettyMoney(<span class="hljs-keyword">this</span>.high);
+        obj[Language.low] = PortfolioDisplayItem.toPrettyMoney(<span class="hljs-keyword">this</span>.low);
+        obj[Language.currentValue] = PortfolioDisplayItem.toPrettyMoney(<span class="hljs-keyword">this</span>.currentValue);
+
+        <span class="hljs-keyword">return</span> obj;
+    }
+
+    <span class="hljs-comment">/**
+     * Convert a string containing two comma-separated numbers into a point.
+     * <span class="hljs-doctag">@param <span class="hljs-type">{string}</span> <span class="hljs-variable">value</span></span> - The string containing two comma-separated numbers.
+     * <span class="hljs-doctag">@return <span class="hljs-type">{string}</span> </span>formatted string to USD
+     */</span>
+    <span class="hljs-keyword">static</span> toPrettyMoney(value) {
+        <span class="hljs-keyword">if</span> (!value)
+            <span class="hljs-keyword">return</span> value;
+        <span class="hljs-keyword">else</span>
+            <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Intl</span>.NumberFormat(<span class="hljs-string">"en-US"</span>,
+                { <span class="hljs-attr">style</span>: <span class="hljs-string">"currency"</span>, <span class="hljs-attr">currency</span>: <span class="hljs-string">"USD"</span> }
+            ).format(value);
+    }
+}
+
+<span class="hljs-comment">/**
+ * Class for holding a collection of stocks and/or totals of stocks
+ */</span>
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Portfolio</span> </span>{
+    <span class="hljs-keyword">constructor</span>(stocks) {
+        <span class="hljs-keyword">this</span>.stocks = stocks;
+
+        <span class="hljs-keyword">let</span> currentTotal = stocks.sum(<span class="hljs-string">"currentValue"</span>);
+
+        stocks.push(<span class="hljs-keyword">new</span> PortfolioDisplayItem(<span class="hljs-string">"Total"</span>, <span class="hljs-literal">null</span>, currentTotal));
+    }
+    <span class="hljs-keyword">get</span> displayItems() {
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.stocks;
+    }
+}
+
+<span class="hljs-keyword">const</span> API_URL = <span class="hljs-string">"financialmodelingprep.com"</span>;
+<span class="hljs-keyword">const</span> STOCK_START_DATE = <span class="hljs-string">"2019-01-01"</span>;
+<span class="hljs-keyword">const</span> TODAY = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Date</span>().toISOString().slice(<span class="hljs-number">0</span>, <span class="hljs-number">10</span>);
+
+<span class="hljs-comment">/**
+ * Class for interfacing to a remote stock API hosted here:
+ *
+ * https://financialmodelingprep.com
+ */</span>
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">StockApiConsumer</span> </span>{
+    <span class="hljs-keyword">static</span> requestCurrentPriceForTicker(ticker) {
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Promise</span>(<span class="hljs-function"><span class="hljs-params">resolve</span> =&gt;</span> {
+            resolve(<span class="hljs-keyword">this</span>.placeApiRequest(<span class="hljs-string">"/api/v3/stock/real-time-price/"</span> + ticker));
+        });
+    }
+    <span class="hljs-keyword">static</span> requestHistoricalDailyPriceForTicker(ticker) {
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Promise</span>(<span class="hljs-function"><span class="hljs-params">resolve</span> =&gt;</span> {
+            resolve(<span class="hljs-keyword">this</span>.placeApiRequest(<span class="hljs-string">"/api/v3/historical-price-full/"</span> + ticker + <span class="hljs-string">"?from="</span> + STOCK_START_DATE + <span class="hljs-string">"&amp;to="</span> + TODAY));
+        });
+    }
+    <span class="hljs-keyword">static</span> placeApiRequest(path) {
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Promise</span>(<span class="hljs-function"><span class="hljs-params">resolve</span> =&gt;</span> {
+            <span class="hljs-keyword">let</span> options = {
+                <span class="hljs-attr">host</span>: API_URL,
+                <span class="hljs-attr">port</span>: <span class="hljs-number">443</span>,
+                <span class="hljs-attr">path</span>: path,
+                <span class="hljs-attr">method</span>: <span class="hljs-string">"GET"</span>
+            };
+
+            <span class="hljs-keyword">let</span> chunks = <span class="hljs-string">""</span>;
+
+            https.request(options, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">res</span>) </span>{
+                res.setEncoding(<span class="hljs-string">"utf8"</span>);
+                res.on(<span class="hljs-string">"data"</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">chunk</span>) </span>{
+                    chunks += chunk;
+                });
+                res.on(<span class="hljs-string">"end"</span>,
+                    <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+                        <span class="hljs-keyword">const</span> result = <span class="hljs-built_in">JSON</span>.parse(chunks);
+                        resolve(result);
+                    });
+            }).end();
+        });
+    }
+}
+
+<span class="hljs-comment">/**
+ * Class for performing business logic on retrieved stock information
+ */</span>
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">StockController</span> </span>{
+    <span class="hljs-keyword">constructor</span>(stocksToRetrieve) {
+        <span class="hljs-keyword">this</span>.stocksToRetrieve = stocksToRetrieve;
+    }
+    calculateStockValue(callback) {
+        <span class="hljs-keyword">let</span> self = <span class="hljs-keyword">this</span>;
+
+        <span class="hljs-keyword">const</span> promises = self.stocksToRetrieve.map(<span class="hljs-function">(<span class="hljs-params">stock</span>) =&gt;</span> {
+            <span class="hljs-keyword">return</span> self.initializeStockProperties(stock, self);
+        });
+
+        <span class="hljs-built_in">Promise</span>.all(promises).then(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{ callback(self); });
+    }
+    <span class="hljs-keyword">async</span> initializeStockProperties(stock, self) {
+        <span class="hljs-keyword">let</span> currentPrice = <span class="hljs-keyword">await</span> StockApiConsumer.requestCurrentPriceForTicker(stock.ticker);
+        <span class="hljs-keyword">let</span> historicalResult = <span class="hljs-keyword">await</span> StockApiConsumer.requestHistoricalDailyPriceForTicker(stock.ticker);
+
+        stock.currentPrice = currentPrice.price;
+        stock.currentValue = stock.currentPrice * stock.quantity;
+        stock.historicalData = historicalResult;
+
+        self.findMinAndMaxFromHistoricalData(stock);
+    }
+    findMinAndMaxFromHistoricalData(stock) {
+        <span class="hljs-keyword">let</span> lowest = <span class="hljs-built_in">Number</span>.POSITIVE_INFINITY;
+        <span class="hljs-keyword">let</span> highest = <span class="hljs-built_in">Number</span>.NEGATIVE_INFINITY;
+        <span class="hljs-keyword">let</span> tmp;
+        <span class="hljs-keyword">let</span> historicalData = stock.historicalData.historical;
+        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> i = historicalData.length - <span class="hljs-number">1</span>; i &gt;= <span class="hljs-number">0</span>; i--) {
+            tmp = historicalData[i];
+            <span class="hljs-keyword">if</span> (tmp.low &lt; lowest) lowest = tmp.low;
+            <span class="hljs-keyword">if</span> (tmp.high &gt; highest) highest = tmp.high;
+        }
+        stock.high = highest;
+        stock.low = lowest;
+    }
+    outputDataToCSV(self) {
+        <span class="hljs-keyword">let</span> portfolio = <span class="hljs-keyword">new</span> Portfolio(self.stocksToRetrieve);
+
+        <span class="hljs-keyword">let</span> displayArray = [];
+
+        portfolio.displayItems.forEach(<span class="hljs-function">(<span class="hljs-params">item</span>) =&gt;</span> {
+            displayArray.push(item.displayObjects());
+        });
+
+        <span class="hljs-keyword">let</span> csv = CsvUtils.jsonArrayToCsv(displayArray);
+        CsvUtils.writeToFile(<span class="hljs-string">"testStockOutput.csv"</span>, csv);
+    }
+}
+
+<span class="hljs-comment">/**
+ * Utility class created to form and write CSV data
+ */</span>
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">CsvUtils</span> </span>{
+    <span class="hljs-keyword">static</span> jsonArrayToCsv(jsonObjects) {
+        <span class="hljs-keyword">let</span> csvRows = [];
+
+        <span class="hljs-keyword">if</span> (!<span class="hljs-built_in">Array</span>.isArray(jsonObjects) || !jsonObjects.length) {
+            <span class="hljs-keyword">return</span> <span class="hljs-string">""</span>;
+        }
+
+        <span class="hljs-keyword">let</span> tokenHeaders = <span class="hljs-built_in">Object</span>.keys(jsonObjects[<span class="hljs-number">0</span>]).join(<span class="hljs-string">","</span>);
+
+        csvRows.push(tokenHeaders);
+
+        jsonObjects.forEach(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">singleRow</span>) </span>{
+            <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> [key, value] <span class="hljs-keyword">of</span> <span class="hljs-built_in">Object</span>.entries(singleRow)) {
+                <span class="hljs-keyword">if</span> (value !== <span class="hljs-literal">null</span> &amp;&amp; value) {
+                    <span class="hljs-keyword">if</span> ((value + <span class="hljs-string">""</span>).indexOf(<span class="hljs-string">","</span>) &gt; <span class="hljs-number">-1</span>)
+                        singleRow[key] = <span class="hljs-string">"\""</span> + value + <span class="hljs-string">"\""</span>;
+                }
+            }
+
+            csvRows.push(<span class="hljs-built_in">Object</span>.values(singleRow).join(<span class="hljs-string">","</span>));
+        });
+
+        <span class="hljs-keyword">let</span> csv = <span class="hljs-string">`<span class="hljs-subst">${csvRows.join(<span class="hljs-string">'\r\n'</span>).replace(<span class="hljs-regexp">/,/g</span>, <span class="hljs-string">','</span>)}</span>`</span>;
+        <span class="hljs-keyword">return</span> csv;
+    }
+    <span class="hljs-keyword">static</span> writeToFile(fileName, csv) {
+        fs.writeFile(fileName, csv, <span class="hljs-string">"utf8"</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">err</span>) </span>{
+            <span class="hljs-keyword">if</span> (err) {
+                <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"Unable to write file."</span>);
+            } <span class="hljs-keyword">else</span> {
+                <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"File is saved."</span>);
+            }
+        });
+    }
+}
+
+<span class="hljs-comment">/**
+ * Entry point, arguments processed here or defaults are used
+ */</span>
+(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+
+    <span class="hljs-keyword">if</span> (<span class="hljs-built_in">require</span>.main === <span class="hljs-built_in">module</span>) {
+        <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'called directly'</span>);
+        <span class="hljs-keyword">let</span> myArgs = process.argv.slice(<span class="hljs-number">2</span>);
+
+        <span class="hljs-keyword">let</span> stocksToRetrieve = [];
+
+        <span class="hljs-keyword">if</span> (myArgs === <span class="hljs-literal">undefined</span> || myArgs.length === <span class="hljs-number">0</span>) {
+            stocksToRetrieve = [
+                <span class="hljs-keyword">new</span> PortfolioDisplayItem(<span class="hljs-string">"AMZN"</span>, <span class="hljs-number">42</span>),
+                <span class="hljs-keyword">new</span> PortfolioDisplayItem(<span class="hljs-string">"MSFT"</span>, <span class="hljs-number">1337</span>),
+                <span class="hljs-keyword">new</span> PortfolioDisplayItem(<span class="hljs-string">"TWTR"</span>, <span class="hljs-number">69105</span>)
+            ];
+        } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (myArgs.length % <span class="hljs-number">2</span> === <span class="hljs-number">0</span>) {
+            <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> i = <span class="hljs-number">0</span>; i &lt; myArgs.length; i += <span class="hljs-number">2</span>) {
+                stocksToRetrieve.push(<span class="hljs-keyword">new</span> PortfolioDisplayItem(myArgs[i], myArgs[i + <span class="hljs-number">1</span>]));
+            }
+        }
+
+        <span class="hljs-keyword">if</span> (stocksToRetrieve.length &gt; <span class="hljs-number">0</span>) {
+            <span class="hljs-keyword">let</span> controller = <span class="hljs-keyword">new</span> StockController(stocksToRetrieve);
+            controller.calculateStockValue(controller.outputDataToCSV);
+        }
+    } <span class="hljs-keyword">else</span> {
+        <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'required as a module'</span>);
+    }
+
+})();</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-6">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-6">&#182;</a>
+              </div>
+              <p>Public</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-built_in">module</span>.exports = {
+    <span class="hljs-attr">PortfolioDisplayItem</span>: PortfolioDisplayItem,
+    <span class="hljs-attr">Portfolio</span>: Portfolio,
+    <span class="hljs-attr">StockApiConsumer</span>: StockApiConsumer,
+    <span class="hljs-attr">StockController</span>: StockController,
+    <span class="hljs-attr">CsvUtils</span>: CsvUtils
+}</pre></div></div>
+            
+        </li>
+        
+    </ul>
+  </div>
+</body>
+</html>
