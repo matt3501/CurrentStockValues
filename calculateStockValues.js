@@ -41,21 +41,19 @@ Array.prototype.sum = function (prop) {
 // `new PortfolioDisplayItem("Total", null, "$10,000");`
 class PortfolioDisplayItem {
     // Create an item to be displayed in a portfolio.
-    // @param {ticker} ticker - The ticker value.
-    // @param {quantity} quantity - The quantity value, null if total
-    // @param {currentValue} currentValue - The currentValue value, sum if a total
+    // quantity (for stocks) and currentValue (for totals) alternate
+    // as null depending on their use
     constructor(ticker, quantity, currentValue) {
         this.ticker = ticker;
-        this.quantity = quantity;
+        this.quantity = quantity == null ? null : quantity;
         this.currentPrice = null;
         this.high = null;
         this.low = null;
-        this.currentValue = currentValue;
+        this.currentValue = currentValue == null ? null : currentValue;
     }
 
     // Get the objects needed for display returned.
-    // @return {number} The x value.
-    displayObjects() {
+    get displayObjects() {
         let obj = {};
         obj[Language.ticker] = this.ticker;
         obj[Language.quantity] = this.quantity;
@@ -67,9 +65,7 @@ class PortfolioDisplayItem {
         return obj;
     }
 
-    // Convert a string containing two comma-separated numbers into a point.
-    // @param {string} value - The string containing two comma-separated numbers.
-    // @return {string} formatted string to USD
+    // Convert a string containing two formatted USD with en-US comma/dot rules
     static toPrettyMoney(value) {
         if (!value)
             return value;
@@ -80,9 +76,8 @@ class PortfolioDisplayItem {
     }
 }
 
-/**
- * Class for holding a collection of stocks and/or totals of stocks
- */
+
+// Class for holding a collection of stocks and/or totals of stocks
 class Portfolio {
     constructor(stocks) {
         this.stocks = stocks;
@@ -91,31 +86,41 @@ class Portfolio {
 
         stocks.push(new PortfolioDisplayItem("Total", null, currentTotal));
     }
+    // Returns all members of the portfolio (stocks and totals)
     get displayItems() {
         return this.stocks;
     }
 }
 
+// Thse are some static values for accessing the API.
 const API_URL = "financialmodelingprep.com";
-const STOCK_START_DATE = "2019-01-01";
+const HISTORICAL_STOCK_START_DATE = "2019-01-01";
 const TODAY = new Date().toISOString().slice(0, 10);
+const stockOutputCsvPath = "testStockOutput.csv";
 
-/**
- * Class for interfacing to a remote stock API hosted here:
- *
- * https://financialmodelingprep.com
- */
+// Class for interfacing to a remote stock API hosted here:
+// 
+// https://financialmodelingprep.com
 class StockApiConsumer {
+    // Places an API request to retrieve the current price.
+    // This is a live value and will update often when the markets are open.
     static requestCurrentPriceForTicker(ticker) {
         return new Promise(resolve => {
             resolve(this.placeApiRequest("/api/v3/stock/real-time-price/" + ticker));
         });
     }
+    // Places an API request to retrieve previous values from 
+    // HISTORICAL_STOCK_START_DATE until TODAY.
+    // 
+    // This return value updates daily at the end of each market close.
     static requestHistoricalDailyPriceForTicker(ticker) {
         return new Promise(resolve => {
-            resolve(this.placeApiRequest("/api/v3/historical-price-full/" + ticker + "?from=" + STOCK_START_DATE + "&to=" + TODAY));
+            resolve(this.placeApiRequest("/api/v3/historical-price-full/" + ticker
+                + "?from=" + HISTORICAL_STOCK_START_DATE + "&to=" + TODAY));
         });
     }
+    // Reusable API method that takes any path.  More paths can be found at 
+    // https://financialmodelingprep.com
     static placeApiRequest(path) {
         return new Promise(resolve => {
             let options = {
@@ -142,9 +147,7 @@ class StockApiConsumer {
     }
 }
 
-/**
- * Class for performing business logic on retrieved stock information
- */
+// This is used for performing business logic on retrieved stock information.
 class StockController {
     constructor(stocksToRetrieve) {
         this.stocksToRetrieve = stocksToRetrieve;
@@ -159,8 +162,10 @@ class StockController {
         Promise.all(promises).then(function () { callback(self); });
     }
     async initializeStockProperties(stock, self) {
-        let currentPrice = await StockApiConsumer.requestCurrentPriceForTicker(stock.ticker);
-        let historicalResult = await StockApiConsumer.requestHistoricalDailyPriceForTicker(stock.ticker);
+        let currentPrice =
+            await StockApiConsumer.requestCurrentPriceForTicker(stock.ticker);
+        let historicalResult =
+            await StockApiConsumer.requestHistoricalDailyPriceForTicker(stock.ticker);
 
         stock.currentPrice = currentPrice.price;
         stock.currentValue = stock.currentPrice * stock.quantity;
@@ -187,17 +192,16 @@ class StockController {
         let displayArray = [];
 
         portfolio.displayItems.forEach((item) => {
-            displayArray.push(item.displayObjects());
+            displayArray.push(item.displayObjects);
         });
 
         let csv = CsvUtils.jsonArrayToCsv(displayArray);
-        CsvUtils.writeToFile("testStockOutput.csv", csv);
+        
+        CsvUtils.writeToFile(stockOutputCsvPath, csv);
     }
 }
 
-/**
- * Utility class created to form and write CSV data
- */
+// Utility class created to form and write CSV data
 class CsvUtils {
     static jsonArrayToCsv(jsonObjects) {
         let csvRows = [];
@@ -235,9 +239,7 @@ class CsvUtils {
     }
 }
 
-/**
- * Entry point, arguments processed here or defaults are used
- */
+// Entry point, arguments processed here or defaults are used
 (function () {
 
     if (require.main === module) {

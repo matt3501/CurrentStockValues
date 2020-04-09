@@ -4,7 +4,7 @@ NM Interview Question
 ##### TL;DR
 This is a NodeJS utility application where a user can provide paired arguments to fetch stock information.
 
-Usage:
+## Usage:
 
 `node calculateStockValues.js AAPL 5 MSFT 10`
 
@@ -32,8 +32,14 @@ Total,,,,,"$2,309,615.41"
 The following items were needed to get up and running on a Windows 10 x64 machine
 
  *  nodeJS
+   * https://nodejs.org/en/download/
  *  yarn
+ *  jest
  *  docco
+
+With all of those installed, follow the initialization instructions on jest's website:
+
+https://jestjs.io/docs/en/getting-started
 
 ## Run the tests
 

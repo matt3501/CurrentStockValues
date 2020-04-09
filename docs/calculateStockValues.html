@@ -25,11 +25,6 @@
                 </a>
               
                 
-                <a class="source" href="calculateStockValues.test.html">
-                  calculateStockValues.test.js
-                </a>
-              
-                
                 <a class="source" href="language.en.resources.html">
                   language.en.resources.js
                 </a>
@@ -141,27 +136,48 @@ Total usage declaration:
 
             </div>
             
-            <div class="content"><div class='highlight'><pre><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">PortfolioDisplayItem</span> </span>{
-    <span class="hljs-comment">/**
-     * Create an item to be displayed in a portfolio.
-     * <span class="hljs-doctag">@param <span class="hljs-type">{ticker}</span> <span class="hljs-variable">ticker</span></span> - The ticker value.
-     * <span class="hljs-doctag">@param <span class="hljs-type">{quantity}</span> <span class="hljs-variable">quantity</span></span> - The quantity value, null if total
-     * <span class="hljs-doctag">@param <span class="hljs-type">{currentValue}</span> <span class="hljs-variable">currentValue</span></span> - The currentValue value, sum if a total
-     */</span>
-    <span class="hljs-keyword">constructor</span>(ticker, quantity, currentValue) {
+            <div class="content"><div class='highlight'><pre><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">PortfolioDisplayItem</span> </span>{</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-6">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-6">&#182;</a>
+              </div>
+              <p>Create an item to be displayed in a portfolio.
+@param {ticker} ticker - The ticker value.
+@param {quantity} quantity - The quantity value, null if total
+@param {currentValue} currentValue - The currentValue value, sum if a total</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">constructor</span>(ticker, quantity, currentValue) {
         <span class="hljs-keyword">this</span>.ticker = ticker;
         <span class="hljs-keyword">this</span>.quantity = quantity;
         <span class="hljs-keyword">this</span>.currentPrice = <span class="hljs-literal">null</span>;
         <span class="hljs-keyword">this</span>.high = <span class="hljs-literal">null</span>;
         <span class="hljs-keyword">this</span>.low = <span class="hljs-literal">null</span>;
         <span class="hljs-keyword">this</span>.currentValue = currentValue;
-    }
+    }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-7">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-7">&#182;</a>
+              </div>
+              <p>Get the objects needed for display returned.
+@return {number} The x value.</p>
 
-    <span class="hljs-comment">/**
-     * Get the objects needed for display returned.
-     * <span class="hljs-doctag">@return <span class="hljs-type">{number}</span> </span>The x value.
-     */</span>
-    displayObjects() {
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    displayObjects() {
         <span class="hljs-keyword">let</span> obj = {};
         obj[Language.ticker] = <span class="hljs-keyword">this</span>.ticker;
         obj[Language.quantity] = <span class="hljs-keyword">this</span>.quantity;
@@ -171,14 +187,24 @@ Total usage declaration:
         obj[Language.currentValue] = PortfolioDisplayItem.toPrettyMoney(<span class="hljs-keyword">this</span>.currentValue);
 
         <span class="hljs-keyword">return</span> obj;
-    }
+    }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-8">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-8">&#182;</a>
+              </div>
+              <p>Convert a string containing two comma-separated numbers into a point.
+@param {string} value - The string containing two comma-separated numbers.
+@return {string} formatted string to USD</p>
 
-    <span class="hljs-comment">/**
-     * Convert a string containing two comma-separated numbers into a point.
-     * <span class="hljs-doctag">@param <span class="hljs-type">{string}</span> <span class="hljs-variable">value</span></span> - The string containing two comma-separated numbers.
-     * <span class="hljs-doctag">@return <span class="hljs-type">{string}</span> </span>formatted string to USD
-     */</span>
-    <span class="hljs-keyword">static</span> toPrettyMoney(value) {
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">static</span> toPrettyMoney(value) {
         <span class="hljs-keyword">if</span> (!value)
             <span class="hljs-keyword">return</span> value;
         <span class="hljs-keyword">else</span>
@@ -379,11 +405,11 @@ Total usage declaration:
         </li>
         
         
-        <li id="section-6">
+        <li id="section-9">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-6">&#182;</a>
+                <a class="pilcrow" href="#section-9">&#182;</a>
               </div>
               <p>Public</p>
 
