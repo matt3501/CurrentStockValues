@@ -1,3 +1,5 @@
+"use strict";
+
 /*
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,17 +16,39 @@ limitations under the License.
 
 */
 
-const calculateStockValue = require('./calculateStockValue');
+const StockApiConsumer = require('./calculateStockValues').StockApiConsumer;
+const mockPlaceApiRequest = require('./calculateStockValues').mockPlaceApiRequest;
+
+
+const calculateStockValues = require('./calculateStockValues');
 
 var fs = require('fs');
 
-try {
-    var data = fs.readFileSync('ExampleOutput.csv', 'utf8');
-    console.log(data);    
-} catch(e) {
-    console.log('Error:', e.stack);
-}
+describe("CsvUtils Test", () => {
+    test("JSON object[] test of CSVUtils.jsonArrayToCSV - Happy path", () => {
+        //arrange
+        const input = [
+            { "Ticker": "AAPL", "Quantity": "5", "Current Price": "$315.11", "High": "$323.33", "Low": "$142.00", "Current Value": "$1,575.53" },
+            { "Ticker": "SPY", "Quantity": "10", "Current Price": "$326.61", "High": "$327.39", "Low": "$242.60", "Current Value": "$3,266.10" },
+            { "Ticker": "KMI", "Quantity": "15", "Current Price": "$21.49", "High": "$21.88", "Low": "$15.10", "Current Value": "$322.35" },
+            { "Ticker": "Total", "Quantity": null, "Current Price": null, "High": null, "Low": null, "Current Value": "$5,163.98" }
+        ];
+        var exampleOutput = fs.readFileSync('ExampleOutput.csv', 'utf8');
 
-test('adds 1 + 2 to equal 3', () => {
-  expect(calculateStockValue()).toBe(data);
+        //act
+        let jsonArrayToCsv = calculateStockValues.CsvUtils.jsonArrayToCsv(input);
+
+        //assert
+        expect(jsonArrayToCsv).toBe(exampleOutput);
+    });
+    test("JSON object[] test of CSVUtils.jsonArrayToCSV - input validation", () => {
+        //arrange
+        const input = [];
+        
+        //act
+        let jsonArrayToCsv = calculateStockValues.CsvUtils.jsonArrayToCsv(input);
+
+        //assert
+        expect(jsonArrayToCsv).toBe("");
+    });
 });
