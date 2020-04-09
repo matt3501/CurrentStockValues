@@ -14,8 +14,11 @@
 //     See the License for the specific language governing permissions and
 //     limitations under the License.
 
+// Includes for the project
 const https = require("https");
 const fs = require("fs");
+// Attempt to be internationalizable, however would need a better mechanism to
+// set dynamically based on use context.
 const Language = require("./language.en.resources");
 
 // Helper extension methods
@@ -54,7 +57,7 @@ class PortfolioDisplayItem {
 
     // Get the objects needed for display returned.
     get displayObjects() {
-        let obj = {};
+        const obj = {};
         obj[Language.ticker] = this.ticker;
         obj[Language.quantity] = this.quantity;
         obj[Language.currentPrice] = PortfolioDisplayItem.toPrettyMoney(this.currentPrice);
@@ -92,14 +95,13 @@ class Portfolio {
     }
 }
 
-// Thse are some static values for accessing the API.
+// These are some static values for accessing the API.
 const API_URL = "financialmodelingprep.com";
 const HISTORICAL_STOCK_START_DATE = "2019-01-01";
 const TODAY = new Date().toISOString().slice(0, 10);
 const stockOutputCsvPath = "testStockOutput.csv";
 
 // Class for interfacing to a remote stock API hosted here:
-// 
 // https://financialmodelingprep.com
 class StockApiConsumer {
     // Places an API request to retrieve the current price.
@@ -137,6 +139,7 @@ class StockApiConsumer {
                 res.on("data", function (chunk) {
                     chunks += chunk;
                 });
+                // Funny story, turns out you need to wait until the end for large responses.
                 res.on("end",
                     function () {
                         const result = JSON.parse(chunks);
@@ -149,11 +152,14 @@ class StockApiConsumer {
 
 // This is used for performing business logic on retrieved stock information.
 class StockController {
+    // Pretty standard constructor, where stocksToRetrieve is type `PortfolioDisplayItem`
     constructor(stocksToRetrieve) {
         this.stocksToRetrieve = stocksToRetrieve;
     }
+    // Intended to have `outputDataToCSV` called right after with the provided
+    // `callback`
     calculateStockValue(callback) {
-        let self = this;
+        const self = this;
 
         const promises = self.stocksToRetrieve.map((stock) => {
             return self.initializeStockProperties(stock, self);
@@ -161,11 +167,11 @@ class StockController {
 
         Promise.all(promises).then(function () { callback(self); });
     }
+    // The calls to `StockApiConsumer` are static, just have to wait for them 
+    // to return before performing the calculations for stock attributes.
     async initializeStockProperties(stock, self) {
-        let currentPrice =
-            await StockApiConsumer.requestCurrentPriceForTicker(stock.ticker);
-        let historicalResult =
-            await StockApiConsumer.requestHistoricalDailyPriceForTicker(stock.ticker);
+        const currentPrice = await StockApiConsumer.requestCurrentPriceForTicker(stock.ticker);
+        const historicalResult = await StockApiConsumer.requestHistoricalDailyPriceForTicker(stock.ticker);
 
         stock.currentPrice = currentPrice.price;
         stock.currentValue = stock.currentPrice * stock.quantity;
@@ -173,11 +179,13 @@ class StockController {
 
         self.findMinAndMaxFromHistoricalData(stock);
     }
+    // Bases its entire calculation on the `stock.historicalData.historical`
+    // property, so make sure it's set before calling.
     findMinAndMaxFromHistoricalData(stock) {
         let lowest = Number.POSITIVE_INFINITY;
         let highest = Number.NEGATIVE_INFINITY;
         let tmp;
-        let historicalData = stock.historicalData.historical;
+        const historicalData = stock.historicalData.historical;
         for (let i = historicalData.length - 1; i >= 0; i--) {
             tmp = historicalData[i];
             if (tmp.low < lowest) lowest = tmp.low;
@@ -186,6 +194,8 @@ class StockController {
         stock.high = highest;
         stock.low = lowest;
     }
+    // Package the data to CSV format and write to a local file at path:
+    // `stockOutputCsvPath` for now.
     outputDataToCSV(self) {
         let portfolio = new Portfolio(self.stocksToRetrieve);
 
@@ -203,6 +213,9 @@ class StockController {
 
 // Utility class created to form and write CSV data
 class CsvUtils {
+    // Takes an `array[]` of json and uses the first item to determine columns.
+    // Then for each item in the array, the values are concatenated, and if a
+    // comma exists in any key, the value is escaped with surrounding quotes.
     static jsonArrayToCsv(jsonObjects) {
         let csvRows = [];
 
@@ -228,6 +241,7 @@ class CsvUtils {
         let csv = `${csvRows.join('\r\n').replace(/,/g, ',')}`;
         return csv;
     }
+    // Using `fs`, writes the string locally to the path provided.
     static writeToFile(fileName, csv) {
         fs.writeFile(fileName, csv, "utf8", function (err) {
             if (err) {
@@ -239,21 +253,25 @@ class CsvUtils {
     }
 }
 
-// Entry point, arguments processed here or defaults are used
+// Self executing entry point, arguments processed here or defaults are used
+// (or nothing happens if through 'require').
 (function () {
-
+    // Make sure someone is intending to run this via 
+    // `node calculateStockValues.js` and not through a `require` statement.
     if (require.main === module) {
         console.log('called directly');
         let myArgs = process.argv.slice(2);
 
         let stocksToRetrieve = [];
 
+        // Create some default arguments if none are provided.
         if (myArgs === undefined || myArgs.length === 0) {
             stocksToRetrieve = [
                 new PortfolioDisplayItem("AMZN", 42),
                 new PortfolioDisplayItem("MSFT", 1337),
                 new PortfolioDisplayItem("TWTR", 69105)
             ];
+        // Else make sure the arguments come in pairs 
         } else if (myArgs.length % 2 === 0) {
             for (let i = 0; i < myArgs.length; i += 2) {
                 stocksToRetrieve.push(new PortfolioDisplayItem(myArgs[i], myArgs[i + 1]));
@@ -265,13 +283,14 @@ class CsvUtils {
             controller.calculateStockValue(controller.outputDataToCSV);
         }
     } else {
+        // Else the module was included with a `require` statement.
         console.log('required as a module');
     }
 
 })();
 
 
-// Public
+// Make these modules publicly accessible. 
 module.exports = {
     PortfolioDisplayItem: PortfolioDisplayItem,
     Portfolio: Portfolio,

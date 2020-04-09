@@ -20,6 +20,11 @@
             <div id="jump_page">
               
                 
+                <a class="source" href="__tests__\calculateStockValues.test.html">
+                  __tests__/calculateStockValues.test.js
+                </a>
+              
+                
                 <a class="source" href="calculateStockValues.html">
                   calculateStockValues.js
                 </a>
@@ -79,11 +84,6 @@ See the License <span class="hljs-keyword">for</span> the specific language gove
 limitations under the License.</code></pre>
             </div>
             
-            <div class="content"><div class='highlight'><pre>
-<span class="hljs-keyword">const</span> https = <span class="hljs-built_in">require</span>(<span class="hljs-string">"https"</span>);
-<span class="hljs-keyword">const</span> fs = <span class="hljs-built_in">require</span>(<span class="hljs-string">"fs"</span>);
-<span class="hljs-keyword">const</span> Language = <span class="hljs-built_in">require</span>(<span class="hljs-string">"./language.en.resources"</span>);</pre></div></div>
-            
         </li>
         
         
@@ -92,6 +92,38 @@ limitations under the License.</code></pre>
               
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-3">&#182;</a>
+              </div>
+              <p>Includes for the project</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">const</span> https = <span class="hljs-built_in">require</span>(<span class="hljs-string">"https"</span>);
+<span class="hljs-keyword">const</span> fs = <span class="hljs-built_in">require</span>(<span class="hljs-string">"fs"</span>);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-4">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-4">&#182;</a>
+              </div>
+              <p>Attempt to be internationalizable, however would need a better mechanism to
+set dynamically based on use context.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">const</span> Language = <span class="hljs-built_in">require</span>(<span class="hljs-string">"./language.en.resources"</span>);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-5">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-5">&#182;</a>
               </div>
               <h2 id="helper-extension-methods">Helper extension methods</h2>
 
@@ -108,11 +140,11 @@ limitations under the License.</code></pre>
         </li>
         
         
-        <li id="section-4">
+        <li id="section-6">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-4">&#182;</a>
+                <a class="pilcrow" href="#section-6">&#182;</a>
               </div>
               <h2 id="support-classes">Support Classes</h2>
 
@@ -121,11 +153,11 @@ limitations under the License.</code></pre>
         </li>
         
         
-        <li id="section-5">
+        <li id="section-7">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-5">&#182;</a>
+                <a class="pilcrow" href="#section-7">&#182;</a>
               </div>
               <p>Holds values associated to one entry in a portfolio.
 Can be used either to hold stock information or as a total.</p>
@@ -141,11 +173,11 @@ Total usage declaration:
         </li>
         
         
-        <li id="section-6">
+        <li id="section-8">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-6">&#182;</a>
+                <a class="pilcrow" href="#section-8">&#182;</a>
               </div>
               <p>Create an item to be displayed in a portfolio.
 quantity (for stocks) and currentValue (for totals) alternate
@@ -165,18 +197,18 @@ as null depending on their use</p>
         </li>
         
         
-        <li id="section-7">
+        <li id="section-9">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-7">&#182;</a>
+                <a class="pilcrow" href="#section-9">&#182;</a>
               </div>
               <p>Get the objects needed for display returned.</p>
 
             </div>
             
             <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">get</span> displayObjects() {
-        <span class="hljs-keyword">let</span> obj = {};
+        <span class="hljs-keyword">const</span> obj = {};
         obj[Language.ticker] = <span class="hljs-keyword">this</span>.ticker;
         obj[Language.quantity] = <span class="hljs-keyword">this</span>.quantity;
         obj[Language.currentPrice] = PortfolioDisplayItem.toPrettyMoney(<span class="hljs-keyword">this</span>.currentPrice);
@@ -190,11 +222,11 @@ as null depending on their use</p>
         </li>
         
         
-        <li id="section-8">
+        <li id="section-10">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-8">&#182;</a>
+                <a class="pilcrow" href="#section-10">&#182;</a>
               </div>
               <p>Convert a string containing two formatted USD with en-US comma/dot rules</p>
 
@@ -213,11 +245,11 @@ as null depending on their use</p>
         </li>
         
         
-        <li id="section-9">
+        <li id="section-11">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-9">&#182;</a>
+                <a class="pilcrow" href="#section-11">&#182;</a>
               </div>
               <p>Class for holding a collection of stocks and/or totals of stocks</p>
 
@@ -235,11 +267,11 @@ as null depending on their use</p>
         </li>
         
         
-        <li id="section-10">
+        <li id="section-12">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-10">&#182;</a>
+                <a class="pilcrow" href="#section-12">&#182;</a>
               </div>
               <p>Returns all members of the portfolio (stocks and totals)</p>
 
@@ -253,13 +285,13 @@ as null depending on their use</p>
         </li>
         
         
-        <li id="section-11">
+        <li id="section-13">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-11">&#182;</a>
+                <a class="pilcrow" href="#section-13">&#182;</a>
               </div>
-              <p>Thse are some static values for accessing the API.</p>
+              <p>These are some static values for accessing the API.</p>
 
             </div>
             
@@ -271,14 +303,14 @@ as null depending on their use</p>
         </li>
         
         
-        <li id="section-12">
+        <li id="section-14">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-12">&#182;</a>
+                <a class="pilcrow" href="#section-14">&#182;</a>
               </div>
-              <p>Class for interfacing to a remote stock API hosted here:</p>
-<p><a href="https://financialmodelingprep.com">https://financialmodelingprep.com</a></p>
+              <p>Class for interfacing to a remote stock API hosted here:
+<a href="https://financialmodelingprep.com">https://financialmodelingprep.com</a></p>
 
             </div>
             
@@ -287,11 +319,11 @@ as null depending on their use</p>
         </li>
         
         
-        <li id="section-13">
+        <li id="section-15">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-13">&#182;</a>
+                <a class="pilcrow" href="#section-15">&#182;</a>
               </div>
               <p>Places an API request to retrieve the current price.
 This is a live value and will update often when the markets are open.</p>
@@ -307,11 +339,11 @@ This is a live value and will update often when the markets are open.</p>
         </li>
         
         
-        <li id="section-14">
+        <li id="section-16">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-14">&#182;</a>
+                <a class="pilcrow" href="#section-16">&#182;</a>
               </div>
               <p>Places an API request to retrieve previous values from 
 HISTORICAL_STOCK_START_DATE until TODAY.</p>
@@ -329,11 +361,11 @@ HISTORICAL_STOCK_START_DATE until TODAY.</p>
         </li>
         
         
-        <li id="section-15">
+        <li id="section-17">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-15">&#182;</a>
+                <a class="pilcrow" href="#section-17">&#182;</a>
               </div>
               <p>Reusable API method that takes any path.  More paths can be found at 
 <a href="https://financialmodelingprep.com">https://financialmodelingprep.com</a></p>
@@ -355,8 +387,22 @@ HISTORICAL_STOCK_START_DATE until TODAY.</p>
                 res.setEncoding(<span class="hljs-string">"utf8"</span>);
                 res.on(<span class="hljs-string">"data"</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">chunk</span>) </span>{
                     chunks += chunk;
-                });
-                res.on(<span class="hljs-string">"end"</span>,
+                });</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-18">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-18">&#182;</a>
+              </div>
+              <p>Funny story, turns out you need to wait until the end for large responses.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>                res.on(<span class="hljs-string">"end"</span>,
                     <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
                         <span class="hljs-keyword">const</span> result = <span class="hljs-built_in">JSON</span>.parse(chunks);
                         resolve(result);
@@ -369,46 +415,103 @@ HISTORICAL_STOCK_START_DATE until TODAY.</p>
         </li>
         
         
-        <li id="section-16">
+        <li id="section-19">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-16">&#182;</a>
+                <a class="pilcrow" href="#section-19">&#182;</a>
               </div>
               <p>This is used for performing business logic on retrieved stock information.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">StockController</span> </span>{
-    <span class="hljs-keyword">constructor</span>(stocksToRetrieve) {
+            <div class="content"><div class='highlight'><pre><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">StockController</span> </span>{</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-20">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-20">&#182;</a>
+              </div>
+              <p>Pretty standard constructor, where stocksToRetrieve is type <code>PortfolioDisplayItem</code></p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">constructor</span>(stocksToRetrieve) {
         <span class="hljs-keyword">this</span>.stocksToRetrieve = stocksToRetrieve;
-    }
-    calculateStockValue(callback) {
-        <span class="hljs-keyword">let</span> self = <span class="hljs-keyword">this</span>;
+    }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-21">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-21">&#182;</a>
+              </div>
+              <p>Intended to have <code>outputDataToCSV</code> called right after with the provided
+<code>callback</code></p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    calculateStockValue(callback) {
+        <span class="hljs-keyword">const</span> self = <span class="hljs-keyword">this</span>;
 
         <span class="hljs-keyword">const</span> promises = self.stocksToRetrieve.map(<span class="hljs-function">(<span class="hljs-params">stock</span>) =&gt;</span> {
             <span class="hljs-keyword">return</span> self.initializeStockProperties(stock, self);
         });
 
         <span class="hljs-built_in">Promise</span>.all(promises).then(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{ callback(self); });
-    }
-    <span class="hljs-keyword">async</span> initializeStockProperties(stock, self) {
-        <span class="hljs-keyword">let</span> currentPrice =
-            <span class="hljs-keyword">await</span> StockApiConsumer.requestCurrentPriceForTicker(stock.ticker);
-        <span class="hljs-keyword">let</span> historicalResult =
-            <span class="hljs-keyword">await</span> StockApiConsumer.requestHistoricalDailyPriceForTicker(stock.ticker);
+    }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-22">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-22">&#182;</a>
+              </div>
+              <p>The calls to <code>StockApiConsumer</code> are static, just have to wait for them 
+to return before performing the calculations for stock attributes.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">async</span> initializeStockProperties(stock, self) {
+        <span class="hljs-keyword">const</span> currentPrice = <span class="hljs-keyword">await</span> StockApiConsumer.requestCurrentPriceForTicker(stock.ticker);
+        <span class="hljs-keyword">const</span> historicalResult = <span class="hljs-keyword">await</span> StockApiConsumer.requestHistoricalDailyPriceForTicker(stock.ticker);
 
         stock.currentPrice = currentPrice.price;
         stock.currentValue = stock.currentPrice * stock.quantity;
         stock.historicalData = historicalResult;
 
         self.findMinAndMaxFromHistoricalData(stock);
-    }
-    findMinAndMaxFromHistoricalData(stock) {
+    }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-23">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-23">&#182;</a>
+              </div>
+              <p>Bases its entire calculation on the <code>stock.historicalData.historical</code>
+property, so make sure it’s set before calling.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    findMinAndMaxFromHistoricalData(stock) {
         <span class="hljs-keyword">let</span> lowest = <span class="hljs-built_in">Number</span>.POSITIVE_INFINITY;
         <span class="hljs-keyword">let</span> highest = <span class="hljs-built_in">Number</span>.NEGATIVE_INFINITY;
         <span class="hljs-keyword">let</span> tmp;
-        <span class="hljs-keyword">let</span> historicalData = stock.historicalData.historical;
+        <span class="hljs-keyword">const</span> historicalData = stock.historicalData.historical;
         <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> i = historicalData.length - <span class="hljs-number">1</span>; i &gt;= <span class="hljs-number">0</span>; i--) {
             tmp = historicalData[i];
             <span class="hljs-keyword">if</span> (tmp.low &lt; lowest) lowest = tmp.low;
@@ -416,8 +519,23 @@ HISTORICAL_STOCK_START_DATE until TODAY.</p>
         }
         stock.high = highest;
         stock.low = lowest;
-    }
-    outputDataToCSV(self) {
+    }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-24">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-24">&#182;</a>
+              </div>
+              <p>Package the data to CSV format and write to a local file at path:
+<code>stockOutputCsvPath</code> for now.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    outputDataToCSV(self) {
         <span class="hljs-keyword">let</span> portfolio = <span class="hljs-keyword">new</span> Portfolio(self.stocksToRetrieve);
 
         <span class="hljs-keyword">let</span> displayArray = [];
@@ -435,18 +553,34 @@ HISTORICAL_STOCK_START_DATE until TODAY.</p>
         </li>
         
         
-        <li id="section-17">
+        <li id="section-25">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-17">&#182;</a>
+                <a class="pilcrow" href="#section-25">&#182;</a>
               </div>
               <p>Utility class created to form and write CSV data</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">CsvUtils</span> </span>{
-    <span class="hljs-keyword">static</span> jsonArrayToCsv(jsonObjects) {
+            <div class="content"><div class='highlight'><pre><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">CsvUtils</span> </span>{</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-26">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-26">&#182;</a>
+              </div>
+              <p>Takes an <code>array[]</code> of json and uses the first item to determine columns.
+Then for each item in the array, the values are concatenated, and if a
+comma exists in any key, the value is escaped with surrounding quotes.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">static</span> jsonArrayToCsv(jsonObjects) {
         <span class="hljs-keyword">let</span> csvRows = [];
 
         <span class="hljs-keyword">if</span> (!<span class="hljs-built_in">Array</span>.isArray(jsonObjects) || !jsonObjects.length) {
@@ -470,8 +604,22 @@ HISTORICAL_STOCK_START_DATE until TODAY.</p>
 
         <span class="hljs-keyword">let</span> csv = <span class="hljs-string">`<span class="hljs-subst">${csvRows.join(<span class="hljs-string">'\r\n'</span>).replace(<span class="hljs-regexp">/,/g</span>, <span class="hljs-string">','</span>)}</span>`</span>;
         <span class="hljs-keyword">return</span> csv;
-    }
-    <span class="hljs-keyword">static</span> writeToFile(fileName, csv) {
+    }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-27">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-27">&#182;</a>
+              </div>
+              <p>Using <code>fs</code>, writes the string locally to the path provided.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">static</span> writeToFile(fileName, csv) {
         fs.writeFile(fileName, csv, <span class="hljs-string">"utf8"</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">err</span>) </span>{
             <span class="hljs-keyword">if</span> (err) {
                 <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"Unable to write file."</span>);
@@ -485,31 +633,73 @@ HISTORICAL_STOCK_START_DATE until TODAY.</p>
         </li>
         
         
-        <li id="section-18">
+        <li id="section-28">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-18">&#182;</a>
+                <a class="pilcrow" href="#section-28">&#182;</a>
               </div>
-              <p>Entry point, arguments processed here or defaults are used</p>
+              <p>Self executing entry point, arguments processed here or defaults are used
+(or nothing happens if through ‘require’).</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+            <div class="content"><div class='highlight'><pre>(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-29">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-29">&#182;</a>
+              </div>
+              <p>Make sure someone is intending to run this via 
+<code>node calculateStockValues.js</code> and not through a <code>require</code> statement.</p>
 
-    <span class="hljs-keyword">if</span> (<span class="hljs-built_in">require</span>.main === <span class="hljs-built_in">module</span>) {
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">if</span> (<span class="hljs-built_in">require</span>.main === <span class="hljs-built_in">module</span>) {
         <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'called directly'</span>);
         <span class="hljs-keyword">let</span> myArgs = process.argv.slice(<span class="hljs-number">2</span>);
 
-        <span class="hljs-keyword">let</span> stocksToRetrieve = [];
+        <span class="hljs-keyword">let</span> stocksToRetrieve = [];</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-30">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-30">&#182;</a>
+              </div>
+              <p>Create some default arguments if none are provided.</p>
 
-        <span class="hljs-keyword">if</span> (myArgs === <span class="hljs-literal">undefined</span> || myArgs.length === <span class="hljs-number">0</span>) {
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        <span class="hljs-keyword">if</span> (myArgs === <span class="hljs-literal">undefined</span> || myArgs.length === <span class="hljs-number">0</span>) {
             stocksToRetrieve = [
                 <span class="hljs-keyword">new</span> PortfolioDisplayItem(<span class="hljs-string">"AMZN"</span>, <span class="hljs-number">42</span>),
                 <span class="hljs-keyword">new</span> PortfolioDisplayItem(<span class="hljs-string">"MSFT"</span>, <span class="hljs-number">1337</span>),
                 <span class="hljs-keyword">new</span> PortfolioDisplayItem(<span class="hljs-string">"TWTR"</span>, <span class="hljs-number">69105</span>)
-            ];
-        } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (myArgs.length % <span class="hljs-number">2</span> === <span class="hljs-number">0</span>) {
+            ];</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-31">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-31">&#182;</a>
+              </div>
+              <p>Else make sure the arguments come in pairs </p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (myArgs.length % <span class="hljs-number">2</span> === <span class="hljs-number">0</span>) {
             <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> i = <span class="hljs-number">0</span>; i &lt; myArgs.length; i += <span class="hljs-number">2</span>) {
                 stocksToRetrieve.push(<span class="hljs-keyword">new</span> PortfolioDisplayItem(myArgs[i], myArgs[i + <span class="hljs-number">1</span>]));
             }
@@ -519,8 +709,22 @@ HISTORICAL_STOCK_START_DATE until TODAY.</p>
             <span class="hljs-keyword">let</span> controller = <span class="hljs-keyword">new</span> StockController(stocksToRetrieve);
             controller.calculateStockValue(controller.outputDataToCSV);
         }
-    } <span class="hljs-keyword">else</span> {
-        <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'required as a module'</span>);
+    } <span class="hljs-keyword">else</span> {</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-32">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-32">&#182;</a>
+              </div>
+              <p>Else the module was included with a <code>require</code> statement.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'required as a module'</span>);
     }
 
 })();</pre></div></div>
@@ -528,13 +732,13 @@ HISTORICAL_STOCK_START_DATE until TODAY.</p>
         </li>
         
         
-        <li id="section-19">
+        <li id="section-33">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-19">&#182;</a>
+                <a class="pilcrow" href="#section-33">&#182;</a>
               </div>
-              <p>Public</p>
+              <p>Make these modules publicly accessible. </p>
 
             </div>
             

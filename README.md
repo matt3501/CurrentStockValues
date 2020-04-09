@@ -26,6 +26,10 @@ MSFT,10,$165.14,$190.70,$97.20,"$1,651.40"
 Total,,,,,"$2,991.20"
 ```
 
+## Documentation
+
+After cloning the solution, checkout the docs/calculateStockValues.html file for an annotated source
+
 ## Setup
 
 The following items were needed to get up and running on a Windows 10 x64 machine
